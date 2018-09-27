@@ -88,7 +88,7 @@ class SrMoveitPlannerBenchmarksVisualizer(Plugin):
     def create_menu_bar(self):
         self._widget.myQMenuBar = QMenuBar(self._widget)
         fileMenu = self._widget.myQMenuBar.addMenu('&File')
-        setPathAction = QAction('Open dbs direcotry', self._widget)
+        setPathAction = QAction('Open dbs directory', self._widget)
         setPathAction.triggered.connect(self.show_dialog)
         fileMenu.addAction(setPathAction)
 
@@ -431,6 +431,8 @@ class SrMoveitPlannerBenchmarksVisualizer(Plugin):
 
         scene_layout = self._widget.findChild(QVBoxLayout, "scene_layout")
         scene_layout.addWidget(self.frame_scene)
+
+        self.loadSceneFile("empty")
 
     def loadSceneFile(self, scene_name):
         try:
