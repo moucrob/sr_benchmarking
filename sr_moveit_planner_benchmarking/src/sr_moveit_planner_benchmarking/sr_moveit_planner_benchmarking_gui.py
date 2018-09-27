@@ -30,6 +30,9 @@ class SrMoveitPlannerBenchmarksVisualizer(Plugin):
         super(SrMoveitPlannerBenchmarksVisualizer, self).__init__(context)
         self.setObjectName("SrMoveitPlannerBenchmarksVisualizer")
         self._widget = QWidget()
+        self.loaded_databases = []
+
+        self.create_menu_bar()
 
         ui_file = os.path.join(rospkg.RosPack().get_path(
             'sr_moveit_planner_benchmarking'), 'uis', 'moveit_planner_benchmarking.ui')
@@ -49,28 +52,58 @@ class SrMoveitPlannerBenchmarksVisualizer(Plugin):
         self.plan_time_layout = self._widget.findChild(QVBoxLayout, "plan_time_layout")
         self.solved_layout = self._widget.findChild(QVBoxLayout, "solved_layout")
         self.experiments_info = self._widget.findChild(QTextBrowser, "experiments_info")
+        self.scene_label = self._widget.findChild(QLabel, "scene_label")
+        self.dbs_combo_box = self._widget.findChild(QComboBox, "dbs_combo_box")
+        self.load_db_button = self._widget.findChild(QPushButton, "load_button")
 
         self.perquery_quality_1_layout = self._widget.findChild(QVBoxLayout, "perquery_quality_1_layout")
 
         self.connect_to_database("example_benchmark.db")
-        # rospy.sleep(3.0)
         self.plotStatistics()
         self.plotStatisticsPerQuery()
         self.setExperimentsInfo()
 
+        # Load db
+        self.load_db_button.clicked.connect(self.load_db)
+
         # Scene
         self.createScenePlugin()
-        self.scene_label = self._widget.findChild(QLabel, "scene_label")
         scene_name = self.findScene()
         self.scene_label.setText(scene_name)
         self.loadSceneFile(scene_name)
 
-        # self.scene_view = self._widget.findChild(QPushButton, "scene_view")
-        # self.scene_view.clicked.connect()
-
     def destruct(self):
         self._widget = None
         rospy.loginfo("Closing planner benchmarks visualizer")
+
+    def load_db(self):
+        db_to_be_loaded = self.dbs_combo_box.currentText()
+        print "Loading db: {}!".format(db_to_be_loaded)
+
+    def create_menu_bar(self):
+        self._widget.myQMenuBar = QMenuBar(self._widget)
+        fileMenu = self._widget.myQMenuBar.addMenu('&File')
+        setPathAction = QAction('Open dbs direcotry', self._widget)
+        setPathAction.triggered.connect(self.show_dialog)
+        fileMenu.addAction(setPathAction)
+
+    def show_dialog(self):
+        chosen_path = QFileDialog.getExistingDirectory(self._widget, 'Open file', "")
+        chosen_package_name = os.path.basename(os.path.normpath(chosen_path))
+        if chosen_package_name in rospkg.RosPack().list():
+            self.find_dbs_in_directory(chosen_path)
+            for db in self.loaded_databases:
+                self.dbs_combo_box.addItem(db['rel_path'])
+        else:
+            QMessageBox.warning(self._widget, 'Warning', "Chosen directory must be a ros package!")
+
+    def find_dbs_in_directory(self, directory):
+        for root, dirs, files in os.walk(directory):
+            for file in files:
+                if file.endswith(".db"):
+                    db_full_path = os.path.join(root, file)
+                    db_rel_path = os.path.relpath(db_full_path, directory)
+                    self.loaded_databases.append({'rel_path': db_rel_path, 'full_path': db_full_path})
 
     def connect_to_database(self, db_name):
         db_folder_path = rospkg.RosPack().get_path('sr_moveit_planner_benchmarking')

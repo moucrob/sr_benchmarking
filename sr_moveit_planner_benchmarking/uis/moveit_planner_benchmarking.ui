@@ -26,9 +26,9 @@
    <property name="geometry">
     <rect>
      <x>420</x>
-     <y>0</y>
+     <y>30</y>
      <width>1191</width>
-     <height>941</height>
+     <height>921</height>
     </rect>
    </property>
    <property name="currentIndex">
@@ -448,7 +448,7 @@ p, li { white-space: pre-wrap; }
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>10</y>
+     <y>30</y>
      <width>401</width>
      <height>81</height>
     </rect>
@@ -456,7 +456,7 @@ p, li { white-space: pre-wrap; }
    <property name="title">
     <string>Database</string>
    </property>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="load_button">
     <property name="geometry">
      <rect>
       <x>320</x>
@@ -469,7 +469,7 @@ p, li { white-space: pre-wrap; }
      <string>Load</string>
     </property>
    </widget>
-   <widget class="QComboBox" name="comboBox">
+   <widget class="QComboBox" name="dbs_combo_box">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -480,7 +480,7 @@ p, li { white-space: pre-wrap; }
     </property>
     <item>
      <property name="text">
-      <string>example_benchmark.db</string>
+      <string></string>
      </property>
     </item>
    </widget>
@@ -489,7 +489,7 @@ p, li { white-space: pre-wrap; }
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>100</y>
+     <y>120</y>
      <width>401</width>
      <height>231</height>
     </rect>
@@ -528,9 +528,9 @@ p, li { white-space: pre-wrap; }
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>340</y>
+     <y>370</y>
      <width>401</width>
-     <height>601</height>
+     <height>571</height>
     </rect>
    </property>
    <property name="title">
