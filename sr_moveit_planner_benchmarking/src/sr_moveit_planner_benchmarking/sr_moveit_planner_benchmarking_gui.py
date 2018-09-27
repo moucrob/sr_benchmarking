@@ -229,7 +229,7 @@ class SrMoveitPlannerBenchmarksVisualizer(Plugin):
                 x = i + width / 2 if typename == 'BOOLEAN' else i + 1
                 ax.text(x, .95 * maxy, str(nanCounts[i]), horizontalalignment='center', size='small')
 
-        self.clear_layout(layout)
+        self.clearLayout(layout)
         layout.addWidget(figcanvas)
 
     def plotStatistics(self):
@@ -459,7 +459,7 @@ class SrMoveitPlannerBenchmarksVisualizer(Plugin):
                 break
         return scene_name
 
-    def clear_layout(self, layout):
+    def clearLayout(self, layout):
         for i in reversed(range(layout.count())): 
             layout.itemAt(i).widget().setParent(None)
 
