@@ -16,6 +16,7 @@ from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 from matplotlib import __version__ as matplotlibversion
 
+import signal
 import rospy
 import os
 import rospkg
@@ -467,5 +468,5 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     planner_benchmarking_gui = SrMoveitPlannerBenchmarksVisualizer(None)
     planner_benchmarking_gui._widget.show()
-    app.exec_()
-    planner_benchmarking_gui.destruct()
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
+    sys.exit(app.exec_())
