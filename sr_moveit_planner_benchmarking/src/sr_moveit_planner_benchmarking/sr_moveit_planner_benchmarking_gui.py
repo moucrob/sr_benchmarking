@@ -56,33 +56,34 @@ class SrMoveitPlannerBenchmarksVisualizer(Plugin):
         self.load_db_button = self._widget.findChild(QPushButton, "load_button")
         self.perquery_quality_1_layout = self._widget.findChild(QVBoxLayout, "perquery_quality_1_layout")
 
-        self.connect_to_database("example_benchmark.db")
-        self.plotStatistics()
-        self.plotStatisticsPerQuery()
-        self.setExperimentsInfo()
-
-        # Load db
-        self.load_db_button.clicked.connect(self.load_db)
-
-        # Scene
         self.createScenePlugin()
-        scene_name = self.findScene()
-        self.scene_label.setText(scene_name)
-        self.loadSceneFile(scene_name)
+        self.load_db_button.clicked.connect(self.load_db)
 
     def destruct(self):
         self._widget = None
         rospy.loginfo("Closing planner benchmarks visualizer")
 
+    def update_data_display(self, path_to_db):
+        self.connect_to_database(path_to_db)
+        self.plotStatistics()
+        # self.plotStatisticsPerQuery()
+        self.setExperimentsInfo()
+
+        scene_name = self.findScene()
+        self.scene_label.setText(scene_name)
+        self.loadSceneFile(scene_name)
+
     def load_db(self):
+        path_to_db = None
         db_to_be_loaded = self.dbs_combo_box.currentText()
         for db in self.loaded_databases:
             if db_to_be_loaded == db['rel_path']:
                 print "Loading db: {}".format(db_to_be_loaded)
                 path_to_db = db['full_path']
                 break
-        print "db_full_path: {}".format(path_to_db)
-        # connect_to_database(path_to_db)
+        if path_to_db is not None:
+            print "db_full_path: {}".format(path_to_db)
+            self.update_data_display(path_to_db)
 
     def create_menu_bar(self):
         self._widget.myQMenuBar = QMenuBar(self._widget)
@@ -109,9 +110,7 @@ class SrMoveitPlannerBenchmarksVisualizer(Plugin):
                     db_rel_path = os.path.relpath(db_full_path, directory)
                     self.loaded_databases.append({'rel_path': db_rel_path, 'full_path': db_full_path})
 
-    def connect_to_database(self, db_name):
-        db_folder_path = rospkg.RosPack().get_path('sr_moveit_planner_benchmarking')
-        db_path = db_folder_path + "/data/" + db_name
+    def connect_to_database(self, db_path):
         conn = sqlite3.connect(db_path)
         self.c = conn.cursor()
 
