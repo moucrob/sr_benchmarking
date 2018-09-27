@@ -31,7 +31,6 @@ class SrMoveitPlannerBenchmarksVisualizer(Plugin):
         self.setObjectName("SrMoveitPlannerBenchmarksVisualizer")
         self._widget = QWidget()
         self.loaded_databases = []
-
         self.create_menu_bar()
 
         ui_file = os.path.join(rospkg.RosPack().get_path(
@@ -55,7 +54,6 @@ class SrMoveitPlannerBenchmarksVisualizer(Plugin):
         self.scene_label = self._widget.findChild(QLabel, "scene_label")
         self.dbs_combo_box = self._widget.findChild(QComboBox, "dbs_combo_box")
         self.load_db_button = self._widget.findChild(QPushButton, "load_button")
-
         self.perquery_quality_1_layout = self._widget.findChild(QVBoxLayout, "perquery_quality_1_layout")
 
         self.connect_to_database("example_benchmark.db")
@@ -78,7 +76,13 @@ class SrMoveitPlannerBenchmarksVisualizer(Plugin):
 
     def load_db(self):
         db_to_be_loaded = self.dbs_combo_box.currentText()
-        print "Loading db: {}!".format(db_to_be_loaded)
+        for db in self.loaded_databases:
+            if db_to_be_loaded == db['rel_path']:
+                print "Loading db: {}".format(db_to_be_loaded)
+                path_to_db = db['full_path']
+                break
+        print "db_full_path: {}".format(path_to_db)
+        # connect_to_database(path_to_db)
 
     def create_menu_bar(self):
         self._widget.myQMenuBar = QMenuBar(self._widget)
@@ -390,11 +394,6 @@ class SrMoveitPlannerBenchmarksVisualizer(Plugin):
                         matrix_measurements = matrix_measurements.reshape(num_queries, runcount)
                         ax.boxplot(matrix_measurements, notch=0, sym='k+', vert=1, whis=1.5, bootstrap=1000)
                         # ax.plot()
-
-
-
-
-
 
         xtickNames = plt.setp(ax, xticklabels=labels)
         plt.setp(xtickNames, rotation=90)
